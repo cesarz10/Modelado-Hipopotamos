@@ -41,8 +41,9 @@ def N_tn(I0, J0, A0, M0): # nit = número de iteraciones/generaciones
     return arr
 
 
-def graph(n_iter, I0, J0, A0, M0, arrP):
+def graph(n_iter, I0, J0, A0, M0):
     I, J, A , M = np.ones(1)*2, np.ones(1)*13, np.ones(1)*82, np.ones(1)*3
+    Io, Jo, Ao, Mo = I0, J0, A0, M0
     #figure = plt.figure()
     for i in range(n_iter):
         I0, J0, A0, M0 = N_tn(I0, J0, A0, M0)
@@ -56,17 +57,17 @@ def graph(n_iter, I0, J0, A0, M0, arrP):
     plt.plot(J, label = 'Juveniles')
     plt.plot(A, label = 'Adultos')
     plt.plot(M, label = 'Ancianos')
-    plt.legend(loc='center right', bbox_to_anchor=(1.30, 0.50), ncol=1, fancybox=True, shadow=False, fontsize=12, framealpha=0.2)
+    plt.legend(loc='center right', bbox_to_anchor=(1.30, 0.50), ncol=1, fancybox=True, shadow=False, fontsize=12, framealpha=0.0)
     plt.grid()
-    plt.title('Crecimiento poblacional Hipopótamos')
+    plt.title(f'Crecimiento poblacional Hipopótamos - I({int(Io)}), J({int(Jo)}), A({int(Ao)}), M({int(Mo)})')
     plt.xlabel('Generaciones')
     plt.ylabel('Individuos')
-    plt.savefig(f'Crecimiento_poblacional_I{arrP[0]}, J{arrP[1]}, A{arrP[2]}, M{arrP[3]}.png', transparent=True, bbox_inches='tight')
+    plt.savefig(f'Crecimiento_poblacional_I{int(Io)}_J{int(Jo)}_A{int(Ao)}_M{int(Mo)}.png', transparent=True, bbox_inches='tight')
     plt.show()
 
-# graph(100, 2, 13, 82, 3)
-arrP = [0, 0, 4, 0]
-graph(50, 0, 0, 4, 0, arrP)
+
+# graph(70, 2, 13, 82, 3)
+graph(50, 0, 0, 3, 0)
 
 #Ejemplo Jensen
 def N_tn(): # nit = número de iteraciones/generaciones
