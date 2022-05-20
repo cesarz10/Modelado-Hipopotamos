@@ -1,7 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def N_tn(I0, J0, A0, M0): # nit = número de iteraciones/generaciones
+def N_tn(I0, J0, A0, M0, control): # nit = número de iteraciones/generaciones
+
+    castracion = (control == 'C')
+    sacrificio = (control == 'S')
 
     alpha = 1*0.5*0.8  # tasa de reproducción
     mI = 0.295 # tasa mort años 0-1
@@ -18,6 +21,11 @@ def N_tn(I0, J0, A0, M0): # nit = número de iteraciones/generaciones
     aA = 1-mJ-pA
     aM = 1-mJ-pM
 
+    # si se usa la castracion como mecanismo de control -> tasa de reproducción se ve reducida
+    if castracion:
+        alpha = 1*0.5*0.3
+
+
     I = np.eye(4, 4) # matriz identidad
     Nt = np.vstack(np.array([I0, J0, A0, M0])) # vector de distribución de edades
     N = np.sum(Nt) 
@@ -28,6 +36,17 @@ def N_tn(I0, J0, A0, M0): # nit = número de iteraciones/generaciones
                        [  0 ,    0 ,    aA,   pM]])
 
 
+    # si se usa el sacrificio, se saca n número de hipopótamos por año (cte)
+    if sacrificio:
+        
+        next_it = Nt+((K-N) / K) * np.dot((Leslie- I), (Nt)) # solo para la siguiente generación
+        arr = np.around(next_it,0)# cogiendo el único vector de la matriz que da algún número
+        final_arr = []
+        for i in range(len(arr)):
+            final_arr.append(0) if arr[i] < 7 else final_arr.append(arr[i] - 7) # se sacrifican 7 por generación, si hay menos de 7 entonces quedan 0 individuos
+        
+        return final_arr
+
 
     next_it = Nt+((K-N) / K) * np.dot((Leslie- I), (Nt))# solo para la siguiente generación
 
@@ -37,20 +56,24 @@ def N_tn(I0, J0, A0, M0): # nit = número de iteraciones/generaciones
     #     Nt = next_it[:,2].astype(np.int32)
     #     print(f'\ngeneracion {i}: \n{next_it}\n')
 
-    arr = np.around(next_it,0)# cogiendo le único vector de la matriz que da algún número
+    arr = np.around(next_it,0)# cogiendo el único vector de la matriz que da algún número
     return arr
 
 
 def graph(n_iter, I0, J0, A0, M0):
     I, J, A , M = np.ones(1)*2, np.ones(1)*13, np.ones(1)*82, np.ones(1)*3
     Io, Jo, Ao, Mo = I0, J0, A0, M0
-    #figure = plt.figure()
+    control = None
+
     for i in range(n_iter):
-        I0, J0, A0, M0 = N_tn(I0, J0, A0, M0)
+        if i == 40:
+            control = 'C'
+        I0, J0, A0, M0 = N_tn(I0, J0, A0, M0, control)
         I = np.append(I, I0)
         J = np.append(J, J0)
         A = np.append(A, A0)
         M = np.append(M, M0)
+        
     # plt.figure(figsize=((12,8)))
     plt.tight_layout()
     plt.plot(I, label = 'Infantes')
@@ -59,15 +82,14 @@ def graph(n_iter, I0, J0, A0, M0):
     plt.plot(M, label = 'Ancianos')
     plt.legend(loc='center right', bbox_to_anchor=(1.30, 0.50), ncol=1, fancybox=True, shadow=False, fontsize=12, framealpha=0.0)
     plt.grid()
-    plt.title(f'Crecimiento poblacional Hipopótamos - I({int(Io)}), J({int(Jo)}), A({int(Ao)}), M({int(Mo)})')
+    plt.title(f'Crecimiento poblacional - {control} - I({int(Io)}), J({int(Jo)}), A({int(Ao)}), M({int(Mo)})')
     plt.xlabel('Generaciones')
     plt.ylabel('Individuos')
-    plt.savefig(f'Crecimiento_poblacional_I{int(Io)}_J{int(Jo)}_A{int(Ao)}_M{int(Mo)}.png', transparent=True, bbox_inches='tight')
+    plt.savefig(f'Crecimiento_poblacional_control({control})_I{int(Io)}_J{int(Jo)}_A{int(Ao)}_M{int(Mo)}.png', transparent=True, bbox_inches='tight')
     plt.show()
 
-
 # graph(70, 2, 13, 82, 3)
-graph(50, 0, 0, 3, 0)
+graph(100, 0, 0, 4, 0)
 
 #Ejemplo Jensen
 def N_tn(): # nit = número de iteraciones/generaciones
