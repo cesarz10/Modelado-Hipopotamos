@@ -1,10 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+# función para hallar valores de la siguiente generación
 def N_tn(I0, J0, A0, M0, control): # nit = número de iteraciones/generaciones
 
-    castracion = (control == 'C')
-    sacrificio = (control == 'S')
+    castracion = (control == 'C') # (booleano) checkea si el mecanismo de control introducido es castración
+    sacrificio = (control == 'S') # (booleano) checkea si el mecanismo de control introducido es sacrificio
 
     alpha = 1*0.5*0.8  # tasa de reproducción
     mI = 0.295 # tasa mort años 0-1
@@ -38,43 +39,37 @@ def N_tn(I0, J0, A0, M0, control): # nit = número de iteraciones/generaciones
 
     # si se usa el sacrificio, se saca n número de hipopótamos por año (cte)
     if sacrificio:
-        
         next_it = Nt+((K-N) / K) * np.dot((Leslie- I), (Nt)) # solo para la siguiente generación
-        arr = np.around(next_it,0)# cogiendo el único vector de la matriz que da algún número
-        final_arr = []
+        arr = np.around(next_it,0) # cogiendo el único vector de la matriz que da algún número
+        final_arr = [] # array al que se le va a append el # de individuos de cada categoría después de sacrificar
+        n = 7 # número de individuos a sacrificar por cada categoría
+
         for i in range(len(arr)):
-            final_arr.append(0) if arr[i] < 7 else final_arr.append(arr[i] - 7) # se sacrifican 7 por generación, si hay menos de 7 entonces quedan 0 individuos
+            final_arr.append(0) if arr[i] < n else final_arr.append(arr[i] - n) # se sacrifican n por generación, si hay menos de n entonces quedan 0 individuos
         
         return final_arr
 
 
     next_it = Nt+((K-N) / K) * np.dot((Leslie- I), (Nt))# solo para la siguiente generación
 
-    # intentando para varias generaciones 
-    # for i in range(nit):
-    #     next_it = Nt + (((K-N) / K) * (Leslie - I) * (Nt))
-    #     Nt = next_it[:,2].astype(np.int32)
-    #     print(f'\ngeneracion {i}: \n{next_it}\n')
-
     arr = np.around(next_it,0)# cogiendo el único vector de la matriz que da algún número
     return arr
 
 
 def graph(n_iter, I0, J0, A0, M0):
-    I, J, A , M = np.ones(1)*2, np.ones(1)*13, np.ones(1)*82, np.ones(1)*3
+    I, J, A , M = np.ones(1)*I0, np.ones(1)*J0, np.ones(1)*A0, np.ones(1)*M0
     Io, Jo, Ao, Mo = I0, J0, A0, M0
     control = None
 
     for i in range(n_iter):
-        if i == 40:
-            control = 'C'
+        if i == 40: # después de 40 generaciones se introduce el mecanismo de control
+            control = ''  # !!!!!!!!!!!! CAMBIAR A LA LETRA DEL MECANISMO DE CONTROL !!!!
         I0, J0, A0, M0 = N_tn(I0, J0, A0, M0, control)
         I = np.append(I, I0)
         J = np.append(J, J0)
         A = np.append(A, A0)
         M = np.append(M, M0)
         
-    # plt.figure(figsize=((12,8)))
     plt.tight_layout()
     plt.plot(I, label = 'Infantes')
     plt.plot(J, label = 'Juveniles')
@@ -90,6 +85,22 @@ def graph(n_iter, I0, J0, A0, M0):
 
 # graph(70, 2, 13, 82, 3)
 graph(100, 0, 0, 4, 0)
+
+
+
+
+
+
+
+
+
+# --------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
 
 #Ejemplo Jensen
 def N_tn(): # nit = número de iteraciones/generaciones
