@@ -71,20 +71,21 @@ def graph(n_iter, I0, J0, A0, M0):
         M = np.append(M, M0)
         
     plt.tight_layout()
-    plt.plot(I, label = 'Infantes')
-    plt.plot(J, label = 'Juveniles')
-    plt.plot(A, label = 'Adultos')
-    plt.plot(M, label = 'Ancianos')
+    plt.plot(I, label = 'Infantes', marker='.')
+    plt.plot(J, label = 'Juveniles', marker='.')
+    plt.plot(A, label = 'Adultos', marker='.')
+    plt.plot(M, label = 'Ancianos', marker='.')
     plt.legend(loc='center right', bbox_to_anchor=(1.30, 0.50), ncol=1, fancybox=True, shadow=False, fontsize=12, framealpha=0.0)
     plt.grid()
-    plt.title(f'Crecimiento poblacional - {control} - I({int(Io)}), J({int(Jo)}), A({int(Ao)}), M({int(Mo)})')
+    # plt.title(f'Crecimiento poblacional - {control} - I({int(Io)}), J({int(Jo)}), A({int(Ao)}), M({int(Mo)})')
+    plt.title(f'Crecimiento poblacional - I({int(Io)}), J({int(Jo)}), A({int(Ao)}), M({int(Mo)})')
     plt.xlabel('Generaciones')
     plt.ylabel('Individuos')
     plt.savefig(f'Crecimiento_poblacional_control({control})_I{int(Io)}_J{int(Jo)}_A{int(Ao)}_M{int(Mo)}.png', transparent=True, bbox_inches='tight')
     plt.show()
 
 # graph(70, 2, 13, 82, 3)
-graph(100, 0, 0, 4, 0)
+graph(70, 0, 0, 4, 0)
 
 
 
