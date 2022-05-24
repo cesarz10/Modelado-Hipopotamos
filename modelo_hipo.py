@@ -24,8 +24,7 @@ def N_tn(I0, J0, A0, M0, control): # nit = número de iteraciones/generaciones
 
     # si se usa la castracion como mecanismo de control -> tasa de reproducción se ve reducida
     if castracion:
-        alpha = 1*0.5*0.3
-
+        alpha = 1*0.5*0.1
 
     I = np.eye(4, 4) # matriz identidad
     Nt = np.vstack(np.array([I0, J0, A0, M0])) # vector de distribución de edades
@@ -63,7 +62,7 @@ def graph(n_iter, I0, J0, A0, M0):
 
     for i in range(n_iter):
         if i == 40: # después de 40 generaciones se introduce el mecanismo de control
-            control = ''  # !!!!!!!!!!!! CAMBIAR A LA LETRA DEL MECANISMO DE CONTROL !!!!
+            control = 'S'  # !!!!!!!!!!!! CAMBIAR A LA LETRA DEL MECANISMO DE CONTROL !!!!
         I0, J0, A0, M0 = N_tn(I0, J0, A0, M0, control)
         I = np.append(I, I0)
         J = np.append(J, J0)
@@ -77,15 +76,15 @@ def graph(n_iter, I0, J0, A0, M0):
     plt.plot(M, label = 'Ancianos', marker='.')
     plt.legend(loc='center right', bbox_to_anchor=(1.30, 0.50), ncol=1, fancybox=True, shadow=False, fontsize=12, framealpha=0.0)
     plt.grid()
-    # plt.title(f'Crecimiento poblacional - {control} - I({int(Io)}), J({int(Jo)}), A({int(Ao)}), M({int(Mo)})')
-    plt.title(f'Crecimiento poblacional - I({int(Io)}), J({int(Jo)}), A({int(Ao)}), M({int(Mo)})')
-    plt.xlabel('Generaciones')
+    plt.title(f'Crecimiento poblacional - {control} - I({int(Io)}), J({int(Jo)}), A({int(Ao)}), M({int(Mo)})')
+    # plt.title(f'Crecimiento poblacional - I({int(Io)}), J({int(Jo)}), A({int(Ao)}), M({int(Mo)})')
+    plt.xlabel('Años')
     plt.ylabel('Individuos')
     plt.savefig(f'Crecimiento_poblacional_control({control})_I{int(Io)}_J{int(Jo)}_A{int(Ao)}_M{int(Mo)}.png', transparent=True, bbox_inches='tight')
     plt.show()
 
 # graph(70, 2, 13, 82, 3)
-graph(70, 0, 0, 4, 0)
+graph(100, 0, 0, 4, 0)
 
 
 
