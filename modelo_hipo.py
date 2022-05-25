@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 # función para hallar valores de la siguiente generación
 def N_tn(I0, J0, A0, M0, control): # nit = número de iteraciones/generaciones
 
-    castracion = (control == 'C') # (booleano) checkea si el mecanismo de control introducido es castración
-    sacrificio = (control == 'S') # (booleano) checkea si el mecanismo de control introducido es sacrificio
+    castracion = (control == 'C' or control == 'CS') # (booleano) checkea si el mecanismo de control introducido es castración
+    sacrificio = (control == 'S' or control == 'CS') # (booleano) checkea si el mecanismo de control introducido es sacrificio
 
     alpha = 1*0.5*0.8  # tasa de reproducción
     mI = 0.295 # tasa mort años 0-1
@@ -80,7 +80,7 @@ def graph(n_iter, I0, J0, A0, M0):
     # plt.title(f'Crecimiento poblacional - I({int(Io)}), J({int(Jo)}), A({int(Ao)}), M({int(Mo)})')
     plt.xlabel('Años')
     plt.ylabel('Individuos')
-    plt.savefig(f'Crecimiento_poblacional_control({control})_I{int(Io)}_J{int(Jo)}_A{int(Ao)}_M{int(Mo)}.png', transparent=True, bbox_inches='tight')
+    plt.savefig(f'Crecimiento_poblacional_control({control})_I{int(Io)}_J{int(Jo)}_A{int(Ao)}_M{int(Mo)}.png', transparent=False, bbox_inches='tight')
     plt.show()
 
 # graph(70, 2, 13, 82, 3)
