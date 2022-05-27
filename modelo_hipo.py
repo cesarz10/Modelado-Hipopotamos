@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 def N_tn(I0, J0, A0, M0, control): # nit = número de iteraciones/generaciones
 
     castracion = (control == 'C' or control == 'M') # (booleano) checkea si el mecanismo de control introducido es castración o mixto
-    sacrificio = (control == 'S' or control == 'M') # (booleano) checkea si el mecanismo de control introducido es sacrificio o mixto
+    sacrificio = (control == 'S' or control == 'M' or control == 'E') # (booleano) checkea si el mecanismo de control introducido es sacrificio, mixto o emigración
 
     alpha = 1*0.5*0.8  # tasa de reproducción
     mI = 0.295 # tasa mort años 0-1
@@ -23,7 +23,7 @@ def N_tn(I0, J0, A0, M0, control): # nit = número de iteraciones/generaciones
 
     # si se usa la castracion como mecanismo de control -> tasa de reproducción se ve reducida
     if castracion:
-        alpha = 1*0.5*0.1
+        alpha = alpha * 0.69 # castrando por proporción (69% capaz de reproducción)
 
     I = np.eye(4, 4) # matriz identidad
     Nt = np.vstack(np.array([I0, J0, A0, M0])) # vector de distribución de edades
@@ -34,13 +34,14 @@ def N_tn(I0, J0, A0, M0, control): # nit = número de iteraciones/generaciones
                        [  0 ,    aJ,    pA,    0],
                        [  0 ,    0 ,    aA,   pM]])
 
+    # print(A0)
 
     # si se usa el sacrificio, se saca n número de hipopótamos de todas las categorías por año (cte)
     if sacrificio:
         next_it = Nt+((K-N) / K) * np.dot((Leslie- I), (Nt)) # solo para la siguiente generación
         arr = np.around(next_it,0) # cogiendo el único vector de la matriz que da algún número
         final_arr = [] # array al que se le va a append el # de individuos de cada categoría después de sacrificar
-        n = 7 # número de individuos a sacrificar por cada categoría
+        n = 4 # número de individuos a sacrificar por cada categoría
 
         for i in range(len(arr)):
             final_arr.append(0) if arr[i] < n else final_arr.append(arr[i] - n) # se sacrifican n por generación, si hay menos de n entonces quedan 0 individuos
@@ -61,8 +62,8 @@ def graph(n_iter, I0, J0, A0, M0):
     control = None
 
     for i in range(n_iter):
-        if i == 40: # después de 40 generaciones se introduce el mecanismo de control
-            control = 'M'  # !!!!! CAMBIAR A LA LETRA DEL MECANISMO DE CONTROL !!!!! -> 'C' castración, 'S' sacrificio, 'M' mixto
+        if i == 1: # después de i generaciones se introduce el mecanismo de control
+            control = 'C'  # !!!!! CAMBIAR A LA LETRA DEL MECANISMO DE CONTROL !!!!! -> 'C' castración, 'S' sacrificio, 'M' mixto
         I0, J0, A0, M0 = N_tn(I0, J0, A0, M0, control)
         I = np.append(I, I0)
         J = np.append(J, J0)
@@ -80,13 +81,13 @@ def graph(n_iter, I0, J0, A0, M0):
     # plt.title(f'Crecimiento poblacional - I({int(Io)}), J({int(Jo)}), A({int(Ao)}), M({int(Mo)})') # título de crecimiento poblacional sin mecanismo de control
     plt.xlabel('Años')
     plt.ylabel('Individuos')
-    plt.savefig(f'Crecimiento_poblacional_control({control})_I{int(Io)}_J{int(Jo)}_A{int(Ao)}_M{int(Mo)}.png', transparent=False, bbox_inches='tight')
+    plt.savefig(f'Crecimiento_poblacional_control({control})_I{int(Io)}_J{int(Jo)}_A{int(Ao)}_M{int(Mo)}.png', transparent=True, bbox_inches='tight')
     plt.show()
 
-# graph(70, 2, 13, 82, 3)
-graph(100, 0, 0, 4, 0)
 
 
+graph(60, 2, 61, 39, 29) # -> 39 * 0.31 = 12.09 
+# graph(30, 0, 0, 4, 0)
 
 
 
