@@ -63,7 +63,7 @@ def graph(n_iter, I0, J0, A0, M0):
 
     for i in range(n_iter):
         if i == 1: # después de i generaciones se introduce el mecanismo de control
-            control = 'C'  # !!!!! CAMBIAR A LA LETRA DEL MECANISMO DE CONTROL !!!!! -> 'C' castración, 'S' sacrificio, 'M' mixto
+            control = ''  # !!!!! CAMBIAR A LA LETRA DEL MECANISMO DE CONTROL !!!!! -> 'C' castración, 'S' sacrificio, 'M' mixto
         I0, J0, A0, M0 = N_tn(I0, J0, A0, M0, control)
         I = np.append(I, I0)
         J = np.append(J, J0)
@@ -86,7 +86,8 @@ def graph(n_iter, I0, J0, A0, M0):
 
 
 
-graph(60, 2, 61, 39, 29) # -> 39 * 0.31 = 12.09 
+graph(90, 2, 61, 39, 29) # -> 39 * 0.31 = 12.09 
+# graph(90, 1371, 61, 39, 29) # Equilibrio
 # graph(30, 0, 0, 4, 0)
 
 
