@@ -53,9 +53,6 @@ def N_tn(I0, J0, A0, M0, control,n):  # nit = número de iteraciones/generacione
         return final_arr
 
 
-
-        return final_arr
-
     next_it = Nt + ((K - N) / K) * np.dot((Leslie - I), (Nt))  # solo para la siguiente generación
 
     arr = np.around(next_it, 0)  # cogiendo el único vector de la matriz que da algún número
@@ -66,15 +63,12 @@ def N_tn(I0, J0, A0, M0, control,n):  # nit = número de iteraciones/generacione
 # función para hallar valores de la siguiente generación teniendo en cuenta adultos castrados y no-castrados
 def N_tn_cast(I0, J0, Ac0, A0, M0, control, b,n):  # nit = número de iteraciones/generaciones
 
-    mixto = (
-                control == 'M' )
+    mixto = (control == 'M') # booleano
 
-    alpha = 1*0.5*0.8  # tasa de reproducción (1 por cada 0.5 mujeres y 0.8 adultos reprodutores)
+    alpha = 1*0.5*0.8  # tasa de reproducción (1 por cada 0.5 mujeres y 0.8 adultos reproductores)
     mI = 0.295 # prop NO supervivencia años 0-1
     mJA = 0.02 # prop NO supervivencia años 1-55
-
     K = 1500  # capacidad de carga
-
 
     sI = 0   #proporcion que se queda en su grupo de edad
     sJ = 0.85
@@ -85,7 +79,7 @@ def N_tn_cast(I0, J0, Ac0, A0, M0, control, b,n):  # nit = número de iteracione
     pJ = 1-mJA-sJ
     pA = 1-mJA-sA
     pM = 1-mJA-sM
-    # si se usa la castracion como mecanismo de control -> tasa de reproducción se ve reducida
+    
 
     I = np.eye(5, 5)  # matriz identidad
     Nt = np.vstack(np.array([I0, J0, Ac0, A0, M0]))  # vector de distribución de edades
@@ -94,7 +88,7 @@ def N_tn_cast(I0, J0, Ac0, A0, M0, control, b,n):  # nit = número de iteracione
     Leslie = np.array([[sI,        0    ,  0, alpha * pA, 0], # matriz de Lefkovich #http://matema.ujaen.es/jnavas/web_recursos/archivos/matriciales/modelos%20matriciales%20tablas%20vida%20leslie.pdf
                        [pI,       sJ    ,  0,       0   , 0],
                        [ 0,       b*pJ  , sA,       0   , 0],
-                       [ 0,       (1-b)*pJ,  0,      sA   , 0],
+                       [ 0,     (1-b)*pJ,  0,      sA   , 0],
                        [ 0,        0    , pA,      pA   ,sM]])
     
 
@@ -106,9 +100,9 @@ def N_tn_cast(I0, J0, Ac0, A0, M0, control, b,n):  # nit = número de iteracione
           # número de individuos a sacrificar por cada categoría (total sacrificados=n*2) | Adultos no castrados y juveniles
 
         for i in range(len(arr)):
-            if i == 1 or i == 2 or i==3: # si es un adulto entonces se sacrifica
+            if i == 1 or i == 2 or i==3: # si es un adulto o juvenil entonces se sacrifica
                 final_arr.append(0) if arr[i] < n else final_arr.append(arr[i] - n)
-            else: # si no es adulto no se sacrifica
+            else: # si no es adulto ni juvenil, no se sacrifica
                 final_arr.append(arr[i])
 
         return final_arr
@@ -221,7 +215,7 @@ i, j, a, m = 2, 61, 39, 29
 no_control = graph(80, i, j, a, m, '',0.25,8)
 castracion = graph(50, i, j, a, m, 'C',0.25,8)
 sacrificio = graph(50, i, j, a, m, 'S',0.25,8)
-mixto = graph(50, i, j, a, m, 'M',0.4, 5) #Castran 0.25 Juveniles al año y se sacrifican 5 juveniles, y 5 adultos NO castrados
+mixto = graph(50, i, j, a, m, 'M',0.4, 5) #Castran 0.4 Juveniles al año y se sacrifican 5 juveniles, y 5 adultos NO castrados
 
 
 # subplot 2x2 de modelo sin control y combinación de modelos mixtos
@@ -252,11 +246,11 @@ axs[0,1].plot(no_control[2], 'g', marker='.', alpha=0.2)
 axs[0,1].plot(no_control[3], 'm', marker='.', alpha=0.2)
 axs[0,1].set_xlim(0, 51)
 axs[0,1].set_ylim(0, 90)
-axs[0,1].set_title('Proporcion Castr=0.4 | Sacrificio/Emigración = 16 hipos', y=1.012, fontsize=9)
+axs[0,1].set_title('Proporcion Castr=0.4 | Sacrificio/Emigración = 10 hipos', y=1.012, fontsize=9)
 axs[0,1].grid(alpha=0.3)
 
 
-mixto =  graph(50, i, j, a, m, 'M',0.3, 8) #BETA 0.5 y sacrificio 5
+mixto =  graph(50, i, j, a, m, 'M',0.3, 8) #BETA 0.5 y sacrificio 16
 axs[1,0].plot(mixto[0], 'b', marker='^', markersize=4, alpha=1)
 axs[1,0].plot(mixto[1], 'r', marker='^', markersize=4, alpha=1)
 axs[1,0].plot(mixto[2], 'g', marker='^', markersize=4, alpha=1)
@@ -273,7 +267,7 @@ axs[1,0].set_title('Proporcion Castr=0.3 | Sacrificio/Emigración = 16 hipos', y
 axs[1,0].grid(alpha=0.3)
 
 
-mixto =  graph(50, i, j, a, m, 'M',0.2, 15) #BETA 0.5 y sacrificio 10
+mixto =  graph(50, i, j, a, m, 'M',0.2, 15) #BETA 0.5 y sacrificio 30
 axs[1,1].plot(mixto[0], 'b', marker='^', markersize=4, alpha=1)
 axs[1,1].plot(mixto[1], 'r', marker='^', markersize=4, alpha=1)
 axs[1,1].plot(mixto[2], 'g', marker='^', markersize=4, alpha=1)
@@ -288,7 +282,7 @@ axs[1,1].set_xlabel('Años')
 axs[1,1].set_title('Proporcion Castr=0.2 | Sacrificio/Emigración = 30 hipos', y=1.012, fontsize=9)
 axs[1,1].grid(alpha=0.3)
 
-# figs.suptitle(f'Crecimiento poblacional Hipopótamos  - I({int(i)}), J({int(j)}),  A({int(a)}), M({int(m)})', y=0.98)
+
 figs.suptitle(f'Comparación de mecanismos de control mixtos', y=0.98)
 figs.legend(loc='center right', bbox_to_anchor=(1.1, 0.6), fancybox=True, shadow=False, fontsize=9,framealpha=0.0)
 
@@ -297,82 +291,84 @@ plt.savefig(f'subplot_mixtos_Transp_I{int(i)}_J{int(j)}_A{int(a)}_M{int(m)}.png'
 plt.show()
 
 
-# # subplot 2x2 de modelo sin control, castracion, sacrificio, y mixto
-# figs, axs = plt.subplots(2, 2, figsize=(10,8))
-# figs.tight_layout(pad=3.5) # separando los subplots para que no queden tan encima
-# figs.subplots_adjust(top=0.9) # para que el título del subplot no se sobrelape con el de los axs
+# subplot 2x2 de modelo sin control, castracion, sacrificio, y mixto
+figs, axs = plt.subplots(2, 2, figsize=(10,8))
+figs.tight_layout(pad=3.5) # separando los subplots para que no queden tan encima
+figs.subplots_adjust(top=0.9) # para que el título del subplot no se sobrelape con el de los axs
 
-# axs[0,0].plot(no_control[0], 'b', marker='.', alpha=0.9)
-# axs[0,0].plot(no_control[1], 'r',marker='.', alpha=0.9)
-# axs[0,0].plot(no_control[2], 'g',marker='.', alpha=0.9)
-# axs[0,0].plot(no_control[3], 'm', marker='.', alpha=0.9)
-# axs[0,0].set_ylim(-10) # no me muestre nada por debajo del -10 en y
-# axs[0,0].set_xlim(-1) # no me muestre nada antes del -1 en x
-# axs[0,0].vlines(51, -10, 65, linewidth= 2,linestyle=':',color='black',alpha=0.4)
-# axs[0,0].hlines(65, 0, 51, linewidth= 2,linestyle=':',color='black',alpha=0.4)
-# axs[0,0].set_ylabel('Individuos')
-# axs[0,0].set_title('Sin control', y=1.012, fontsize=9)
-# axs[0,0].grid(alpha=0.3)
+axs[0,0].plot(no_control[0], 'b', marker='.', alpha=0.9)
+axs[0,0].plot(no_control[1], 'r',marker='.', alpha=0.9)
+axs[0,0].plot(no_control[2], 'g',marker='.', alpha=0.9)
+axs[0,0].plot(no_control[3], 'm', marker='.', alpha=0.9)
+axs[0,0].set_ylim(-10) # no me muestre nada por debajo del -10 en y
+axs[0,0].set_xlim(-1) # no me muestre nada antes del -1 en x
+axs[0,0].vlines(51, -10, 65, linewidth= 2,linestyle=':',color='black',alpha=0.4)
+axs[0,0].hlines(65, 0, 51, linewidth= 2,linestyle=':',color='black',alpha=0.4)
+axs[0,0].set_ylabel('Individuos')
+axs[0,0].set_title('Sin control', y=1.012, fontsize=9)
+axs[0,0].grid(alpha=0.3)
 
 
-# axs[0,1].plot(castracion[0], 'b', marker='s', markersize=3, alpha=0.9)
-# axs[0,1].plot(castracion[1], 'r', marker='s', markersize=3, alpha=0.9)
-# axs[0,1].plot(castracion[2], 'g', marker='s', markersize=3, alpha=0.9)
-# axs[0,1].plot(castracion[3], 'm', marker='s', markersize=3, alpha=0.9)
-# axs[0,1].plot(no_control[0], 'b', marker='.', alpha=0.2)
-# axs[0,1].plot(no_control[1], 'r', marker='.', alpha=0.2)
-# axs[0,1].plot(no_control[2], 'g', marker='.', alpha=0.2)
-# axs[0,1].plot(no_control[3], 'm', marker='.', alpha=0.2)
-# axs[0,1].set_xlim(0, 51)
-# axs[0,1].set_ylim(0, 90)
-# axs[0,1].set_title('Castración', y=1.012, fontsize=9)
-# axs[0,1].grid(alpha=0.3)
+axs[0,1].plot(castracion[0], 'b', marker='s', markersize=3, alpha=0.9)
+axs[0,1].plot(castracion[1], 'r', marker='s', markersize=3, alpha=0.9)
+axs[0,1].plot(castracion[2], 'g', marker='s', markersize=3, alpha=0.9)
+axs[0,1].plot(castracion[3], 'm', marker='s', markersize=3, alpha=0.9)
+axs[0,1].plot(no_control[0], 'b', marker='.', alpha=0.2)
+axs[0,1].plot(no_control[1], 'r', marker='.', alpha=0.2)
+axs[0,1].plot(no_control[2], 'g', marker='.', alpha=0.2)
+axs[0,1].plot(no_control[3], 'm', marker='.', alpha=0.2)
+axs[0,1].set_xlim(0, 51)
+axs[0,1].set_ylim(0, 90)
+axs[0,1].set_title('Castración', y=1.012, fontsize=9)
+axs[0,1].grid(alpha=0.3)
 
-# axs[1,0].plot(sacrificio[0], 'b', marker='^', markersize= 4,alpha=0.9)
-# axs[1,0].plot(sacrificio[1], 'r', marker='^', markersize= 4,alpha=0.9)
-# axs[1,0].plot(sacrificio[2], 'g', marker='^', markersize= 4,alpha=0.9)
-# axs[1,0].plot(sacrificio[3], 'm', marker='^', markersize= 4,alpha=0.9)
-# axs[1,0].plot(no_control[0], 'b', marker='.', alpha=0.2)
-# axs[1,0].plot(no_control[1], 'r', marker='.', alpha=0.2)
-# axs[1,0].plot(no_control[2], 'g', marker='.', alpha=0.2)
-# axs[1,0].plot(no_control[3], 'm', marker='.', alpha=0.2)
-# axs[1,0].set_xlim(0, 51)
-# axs[1,0].set_ylim(0, 90)
-# axs[1,0].set_xlabel('Años')
-# axs[1,0].set_ylabel('Individuos')
-# axs[1,0].set_title('Sacrificio', y=1.012, fontsize=9)
-# axs[1,0].grid(alpha=0.3)
 
-# axs[1,1].plot(castracion[0], 'b', marker='s', markersize=3, alpha=0.5)
-# axs[1,1].plot(castracion[1], 'r', marker='s', markersize=3, alpha=0.5)
-# axs[1,1].plot(castracion[2], 'g', marker='s', markersize=3, alpha=0.5)
-# axs[1,1].plot(castracion[3], 'm', marker='s', markersize=3, alpha=0.5)
-# axs[1,1].plot(sacrificio[0], 'b', marker='^',markersize=3,  alpha=0.5)
-# axs[1,1].plot(sacrificio[1], 'r', marker='^', markersize=3, alpha=0.5)
-# axs[1,1].plot(sacrificio[2], 'g', marker='^', markersize=3, alpha=0.5)
-# axs[1,1].plot(sacrificio[3], 'm', marker='^', markersize=3, alpha=0.5)
-# axs[1,1].plot(no_control[0], 'b', marker='.', alpha=0.1)
-# axs[1,1].plot(no_control[1], 'r', marker='.', alpha=0.1)
-# axs[1,1].plot(no_control[2], 'g', marker='.', alpha=0.1)
-# axs[1,1].plot(no_control[3], 'm', marker='.', alpha=0.1)
-# axs[1,1].set_xlim(0, 51)
-# axs[1,1].set_ylim(0, 90)
-# axs[1,1].set_xlabel('Años')
-# axs[1,1].set_title('Comparación castración/sacrificio', y=1.012, fontsize=9)
-# axs[1,1].grid(alpha=0.3)
+axs[1,0].plot(sacrificio[0], 'b', marker='^', markersize= 4,alpha=0.9)
+axs[1,0].plot(sacrificio[1], 'r', marker='^', markersize= 4,alpha=0.9)
+axs[1,0].plot(sacrificio[2], 'g', marker='^', markersize= 4,alpha=0.9)
+axs[1,0].plot(sacrificio[3], 'm', marker='^', markersize= 4,alpha=0.9)
+axs[1,0].plot(no_control[0], 'b', marker='.', alpha=0.2)
+axs[1,0].plot(no_control[1], 'r', marker='.', alpha=0.2)
+axs[1,0].plot(no_control[2], 'g', marker='.', alpha=0.2)
+axs[1,0].plot(no_control[3], 'm', marker='.', alpha=0.2)
+axs[1,0].set_xlim(0, 51)
+axs[1,0].set_ylim(0, 90)
+axs[1,0].set_xlabel('Años')
+axs[1,0].set_ylabel('Individuos')
+axs[1,0].set_title('Sacrificio', y=1.012, fontsize=9)
+axs[1,0].grid(alpha=0.3)
 
-# line1 = Line2D(range(1), range(1), color="black", marker='.', markersize=10) # sin control
-# line2 = Line2D(range(1), range(1), color="black", marker='s') # castración
-# line3 = Line2D(range(1), range(1), color="black", marker='^') # sacrificio
-# line4 = Line2D(range(1), range(1), color="b") # infantes
-# line5 = Line2D(range(1), range(1), color="r") # juveniles
-# line6 = Line2D(range(1), range(1), color="g") # adultos
-# line7 = Line2D(range(1), range(1), color="m") # mayores
 
-# figs.suptitle(f'Comparación de los diferentes modelos de control')
-# plt.legend((line4,line5,line6, line7, line1,line2,line3),('Infantes','Juveniles', 'Adultos', 'Mayores', 'Sin control','Castración', 'Sacrificio'), loc='center right', bbox_to_anchor=(1.4, 0.8), fancybox=True, shadow=False, fontsize=9,framealpha=0.0)
-# # plt.legend((line4,line5,line6, line7),('Infantes','Juveniles', 'Adultos', 'Mayores'), loc='center right', bbox_to_anchor=(1.4, 0.3), fancybox=True, shadow=False, fontsize=9,framealpha=0.0)
+axs[1,1].plot(castracion[0], 'b', marker='s', markersize=3, alpha=0.5)
+axs[1,1].plot(castracion[1], 'r', marker='s', markersize=3, alpha=0.5)
+axs[1,1].plot(castracion[2], 'g', marker='s', markersize=3, alpha=0.5)
+axs[1,1].plot(castracion[3], 'm', marker='s', markersize=3, alpha=0.5)
+axs[1,1].plot(sacrificio[0], 'b', marker='^',markersize=3,  alpha=0.5)
+axs[1,1].plot(sacrificio[1], 'r', marker='^', markersize=3, alpha=0.5)
+axs[1,1].plot(sacrificio[2], 'g', marker='^', markersize=3, alpha=0.5)
+axs[1,1].plot(sacrificio[3], 'm', marker='^', markersize=3, alpha=0.5)
+axs[1,1].plot(no_control[0], 'b', marker='.', alpha=0.1)
+axs[1,1].plot(no_control[1], 'r', marker='.', alpha=0.1)
+axs[1,1].plot(no_control[2], 'g', marker='.', alpha=0.1)
+axs[1,1].plot(no_control[3], 'm', marker='.', alpha=0.1)
+axs[1,1].set_xlim(0, 51)
+axs[1,1].set_ylim(0, 90)
+axs[1,1].set_xlabel('Años')
+axs[1,1].set_title('Comparación castración/sacrificio', y=1.012, fontsize=9)
+axs[1,1].grid(alpha=0.3)
 
-# plt.savefig(f'subplot_modelos_Transp_I{int(i)}_J{int(j)}_A{int(a)}_M{int(m)}.png',
-#                 transparent=True, bbox_inches='tight')
-# plt.show()  
+# para la leyenda
+line1 = Line2D(range(1), range(1), color="black", marker='.', markersize=10) # sin control
+line2 = Line2D(range(1), range(1), color="black", marker='s') # castración
+line3 = Line2D(range(1), range(1), color="black", marker='^') # sacrificio
+line4 = Line2D(range(1), range(1), color="b") # infantes
+line5 = Line2D(range(1), range(1), color="r") # juveniles
+line6 = Line2D(range(1), range(1), color="g") # adultos
+line7 = Line2D(range(1), range(1), color="m") # mayores
+
+figs.suptitle(f'Comparación de los diferentes modelos de control')
+plt.legend((line4,line5,line6, line7, line1,line2,line3),('Infantes','Juveniles', 'Adultos', 'Mayores', 'Sin control','Castración', 'Sacrificio'), loc='center right', bbox_to_anchor=(1.4, 0.8), fancybox=True, shadow=False, fontsize=9,framealpha=0.0)
+
+plt.savefig(f'subplot_modelos_Transp_I{int(i)}_J{int(j)}_A{int(a)}_M{int(m)}.png',
+                transparent=True, bbox_inches='tight')
+plt.show()  
