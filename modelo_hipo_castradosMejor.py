@@ -212,9 +212,9 @@ def graph(n_iter, I0, J0, A0, M0, control_met,b,n):
 i, j, a, m = 2, 61, 39, 29
 
 # resultados para los diferentes modelos de control
-no_control = graph(80, i, j, a, m, '',0.25,8)
-castracion = graph(50, i, j, a, m, 'C',0.25,8)
-sacrificio = graph(50, i, j, a, m, 'S',0.25,8)
+no_control = graph(80, i, j, a, m, '', 0.25, 8)
+castracion = graph(50, i, j, a, m, 'C', 0.25, 8)
+sacrificio = graph(50, i, j, a, m, 'S', 0.25, 8)
 mixto = graph(50, i, j, a, m, 'M',0.4, 5) #Castran 0.4 Juveniles al año y se sacrifican 5 juveniles, y 5 adultos NO castrados
 
 
